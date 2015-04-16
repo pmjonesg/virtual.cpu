@@ -59,8 +59,11 @@ void execute_dataproc(unsigned ir, unsigned type, registers *regs);
 void execute_immediate(unsigned ir, unsigned type, registers *regs);
 void execute_load(unsigned ir, unsigned type, registers *regs, uint8_t *memptr);
 void execute_cbranch(unsigned ir, unsigned type, registers *regs);
+void execute_push(uint16_t ir, uint16_t type, registers *regs);
 void execute_ubranch(unsigned ir, unsigned type, registers *regs);
 void regdump(registers *regs);
 void zero(registers *regs);
+void allflagchk(registers *regs, uint32_t regs1, uint32_t regs2);
+void nzflagchk(registers *regs, uint32_t regs1, uint32_t regs2);
 
 #endif

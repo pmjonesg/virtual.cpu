@@ -14,7 +14,7 @@ void memmod(void *memptr, unsigned offset)
 		fgets(new_input, sizeof(uint16_t) + 1, stdin);
 		
 		/* Exit function if '.' is entered */
-		if(strcmp(new_input, ".\n") == 0)
+		if(strcmp(new_input, ".\n") == 0 || strcmp(new_input, ".") == 0)
 			break;
 		/* Check if input is a valid Hex number */
 		else if(!isxdigit(new_input[0]) || !isxdigit(new_input[1])) 

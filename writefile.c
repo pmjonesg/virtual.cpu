@@ -6,8 +6,8 @@
    file_size into a file. */
 void writefile(void *memory)
 {
-	char fname[FILEN_MAX], fsize_buff[HEX_MAX], *pos;
-	int fsize;
+	char fname[FILEN_MAX], fsize_buff[HEX_MAX + 1], *pos;
+	uint32_t fsize;
 	FILE *file;
 
 	printf("Enter the name of the file to write: ");

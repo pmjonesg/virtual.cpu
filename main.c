@@ -49,10 +49,10 @@ int main(int argc, char **argv) {
 			case 'd':
 				/* Input must be taken before calling the function as it takes specific arguments */
 				printf("(offset?) ");
-				if(intoi(offset_input, HEX_MAX, 1, &offset) == -1)
+				if(intoi(offset_input, HEX_MAX + 1, 1, &offset) == -1)
 					break;
 				printf("(length?) ");
-				if(intoi(length_input, HEX_MAX, 1, &length) == -1)
+				if(intoi(length_input, HEX_MAX + 1, 1, &length) == -1)
 					break;
 				memdump(memptr, offset, (length - 1));
 				break;

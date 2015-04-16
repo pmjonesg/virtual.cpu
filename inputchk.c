@@ -26,7 +26,7 @@ int intoi(char *buffer, uint8_t max, uint8_t hex, uint32_t *num)
 			{
 				printf("Enter a valid hex digit\n");
 				/* flush stdin here */
-				//while(getchar() != '\n')
+				fseek(stdin, 0, SEEK_SET);
 				return -1;
 			}
 		}
