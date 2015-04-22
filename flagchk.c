@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include "hardware.h"
 
-#define MSB 0x1000
+#define MSB 0x8000
 #define ISZERO(x) (x == 0) ? 1 : 0
 #define ISSIGN(x) ((MSB & x) == MSB) ? 1 : 0
 

@@ -53,15 +53,15 @@
 #define ADD_IMM 0x2
 #define SUB_IMM 0x3
 /* Conditional Branch Codes */
-#define CBRANCH_EQ 0x0
-#define CBRANCH_NE 0x1
-#define CBRANCH_CS 0x2
-#define CBRANCH_CC 0x3
-#define CBRANCH_MI 0x4
-#define CBRANCH_PL 0x5
-#define CBRANCH_HI 0x8
-#define CBRANCH_LS 0x9
-#define CBRANCH_AL 0xE
+#define CBRANCH_EQ 0x0000
+#define CBRANCH_NE 0x0001
+#define CBRANCH_CS 0x0002
+#define CBRANCH_CC 0x0003
+#define CBRANCH_MI 0x0004
+#define CBRANCH_PL 0x0005
+#define CBRANCH_HI 0x0008
+#define CBRANCH_LS 0x0009
+#define CBRANCH_AL 0x000E
 
 void execute_dataproc(unsigned ir, unsigned type, registers *regs)
 {
@@ -90,7 +90,6 @@ void execute_dataproc(unsigned ir, unsigned type, registers *regs)
 			break;
 		case DATA_CMP:
 			regs->ALU = regs->R[DATA_RD] & ~regs->R[DATA_RN] + 1;
-			regs->R[DATA_RD] = regs->ALU;
 			nzflagchk(regs, regs->R[DATA_RD], regs->R[DATA_RN]);
 			break;
 		case DATA_EOR:
@@ -156,7 +155,7 @@ void execute_dataproc(unsigned ir, unsigned type, registers *regs)
 void execute_load(unsigned ir, unsigned type, registers *regs, uint8_t *memptr)
 {
 	int i = 0;
-	printf("ir: %X\ntype: %X\nstore register: %X\nload bit: %X\nLOAD_W: %X", ir, type, LOAD_RD, LOAD_B, LOAD_W);
+	uint32_t mask = 0xFF000000;
 	switch(LOAD_B)
 	{
 		// Store
@@ -166,10 +165,11 @@ void execute_load(unsigned ir, unsigned type, registers *regs, uint8_t *memptr)
 			{
 				regs->MAR = regs->R[LOAD_RN];
 				regs->MBR = regs->R[LOAD_RD];
-				for(i = 1; i >= 0; i--)
+				for(i = 0; i < 4; i++)
 				{
-					memptr[regs->MAR + i] = regs->MBR;
-					regs->MBR = regs->MBR >> 8;
+					/* Move MSB first into memory, then the rest */
+					memptr[regs->MAR++] = (regs->MBR & mask) >> (8 * (3 - i));
+					mask = mask >> 8;
 				}
 			}
 			// Byte
@@ -186,10 +186,10 @@ void execute_load(unsigned ir, unsigned type, registers *regs, uint8_t *memptr)
 			if(LOAD_W == 0)
 			{
 				regs->MAR = regs->R[LOAD_RN];
-				for(i = 1; i >= 0; i--)
+				for(i = 0; i < 4; i++)
 				{
-					regs->MBR += memptr[regs->MAR + i];
-					regs->MBR = regs->MBR >> 8;
+					regs->MBR = regs->MBR << 8;
+					regs->MBR += memptr[regs->MAR++];
 				}
 				regs->R[LOAD_RD] = regs->MBR;
 			}
@@ -232,51 +232,66 @@ void execute_immediate(unsigned ir, unsigned type, registers *regs)
 
 void execute_cbranch(unsigned ir, unsigned type, registers *regs)
 {
+	/* Use hold value to sign CBRANCH_ADDR */
+	int8_t temp = CBRANCH_ADDR;
+	int32_t offset = (int32_t) temp;
+	/* Decrement PC to reset the branch fetch */
+	regs->PC -= 2;
+
 	switch(CBRANCH_COND)
 	{
 		case CBRANCH_EQ:
 			if(regs->ZERO == true)
-				regs->PC = CBRANCH_ADDR;
+				regs->PC += offset;
 			break;
 		case CBRANCH_NE:
 			if(regs->ZERO == false)
-				regs->PC = CBRANCH_ADDR;	
+				regs->PC += offset;	
 			break;
 		case CBRANCH_CS:
 			if(regs->CARRY = true)
-				regs->PC = CBRANCH_ADDR;
+				regs->PC += offset;
 			break;
 		case CBRANCH_CC:
 			if(regs->CARRY = false)
-				regs->PC = CBRANCH_ADDR;
+				regs->PC += offset;
 			break;
 		case CBRANCH_MI:
 			if(regs->SIGN == true)
-				regs->PC = CBRANCH_ADDR;
+				regs->PC += offset;
 			break;
 		case CBRANCH_PL:
 			if(regs->SIGN == false)
-				regs->PC = CBRANCH_ADDR;
+				regs->PC += offset;
 			break;
 		case CBRANCH_HI:
 			if(regs->CARRY == true && regs->ZERO == false)
-				regs->PC = CBRANCH_ADDR;
+				regs->PC += offset;
 			break;
 		case CBRANCH_LS:
 			if(regs->CARRY == false && regs->ZERO == true)
-				regs->PC = CBRANCH_ADDR;
+				regs->PC += offset;
 			break;
 		case CBRANCH_AL:
-			regs->PC = CBRANCH_ADDR;
+			regs->PC += offset;
 			break;
 	}
+	regs->IR = 0;
+	IR_ACTIVE = 0;
 }
 
 void execute_push(uint16_t ir, uint16_t type, registers *regs, uint8_t *memptr)
 {
-	//printf("Rlist: %X\nL: %X\nH: %X\nR: %X\n", PUSH_REG_LIST, PUSH_LOAD_B, PUSH_HIGH_B, PUSH_EXTRA_B);
-	uint16_t sp = 0x200D;
-	execute_load(sp, 0x1, regs, memptr);	
+	uint8_t i;
+
+	regs->SP--;
+	printf("sp: %08X\n", regs->SP);
+	regs->MAR = regs->SP;
+	for(i = 3; i >= 0; i--)
+	{
+		memptr[regs->MAR + i] = regs->R[PUSH_REG_LIST];
+		regs->MBR = regs->MBR >> 8;
+	}
 }
 
 void execute_ubranch(unsigned ir, unsigned type, registers *regs)
