@@ -4,7 +4,7 @@
 
 /* The purpose of this function is to write the contents of memory from *memory to
    file_size into a file. */
-void writefile(void *memory)
+void writefile()
 {
 	char fname[FILEN_MAX], fsize_buff[HEX_MAX + 1], *pos;
 	uint32_t fsize;
@@ -20,7 +20,7 @@ void writefile(void *memory)
 	if (fsize > MEMORY_MAX)
 		printf("Only 16384 bytes were written to file due to memory size.\n");
 	file = fopen(fname, "wb");
-	fwrite(memory, 1, fsize, file);
+	fwrite(memptr, 1, fsize, file);
 	printf("%X bytes have been written to file %s", fsize, fname);
 	fclose(file);
 }

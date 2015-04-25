@@ -21,8 +21,8 @@
 #define CBRANCH_ADDR (ir & 0x00FF)
 /* Push/Pull */
 #define PUSH_LOAD_B ((ir & 0x0800) >> 11)
-#define PUSH_EXTRA_B ((ir & 0x0400) >> 10)
-#define PUSH_HIGH_B ((ir & 0x0100) >> 8)
+#define PUSH_HIGH_B ((ir & 0x0400) >> 10)
+#define PUSH_EXTRA_B ((ir & 0x0100) >> 8)
 #define PUSH_REG_LIST (ir & 0x00FF)
 /* Unconditional Branch */
 #define UBRANCH_LINK ((ir & 0x1000) >> 12)
@@ -63,96 +63,96 @@
 #define CBRANCH_LS 0x0009
 #define CBRANCH_AL 0x000E
 
-void execute_dataproc(unsigned ir, unsigned type, registers *regs)
+void execute_dataproc(unsigned ir, unsigned type)
 {
 	int i = 0;
 	switch(DATA_OP)
 	{
 		case DATA_ADC:
-			regs->ALU = regs->R[DATA_RD] + DATA_RN + regs->CARRY;
-			regs->R[DATA_RD] = regs->ALU;
-			allflagchk(regs, regs->R[DATA_RD], regs->R[DATA_RN]);
+			regs.ALU = regs.R[DATA_RD] + DATA_RN + regs.CARRY;
+			regs.R[DATA_RD] = regs.ALU;
+			allflagchk(regs.R[DATA_RD], regs.R[DATA_RN]);
 			break;
 		case DATA_ADD:
-			regs->ALU = regs->R[DATA_RD] + regs->R[DATA_RN];
-			regs->R[DATA_RD] = regs->ALU;
-			allflagchk(regs, regs->R[DATA_RD], regs->R[DATA_RN]);
+			regs.ALU = regs.R[DATA_RD] + regs.R[DATA_RN];
+			regs.R[DATA_RD] = regs.ALU;
+			allflagchk(regs.R[DATA_RD], regs.R[DATA_RN]);
 			break;
 		case DATA_AND:
-			regs->ALU = regs->R[DATA_RD] & regs->R[DATA_RN];
-			regs->R[DATA_RD] = regs->ALU;
-			nzflagchk(regs, regs->R[DATA_RD], regs->R[DATA_RN]);
+			regs.ALU = regs.R[DATA_RD] & regs.R[DATA_RN];
+			regs.R[DATA_RD] = regs.ALU;
+			nzflagchk(regs.R[DATA_RD], regs.R[DATA_RN]);
 			break;
 		case DATA_BIC:
-			regs->ALU = regs->R[DATA_RD] & ~regs->R[DATA_RN];
-			regs->R[DATA_RD] = regs->ALU;
-			nzflagchk(regs, regs->R[DATA_RD], regs->R[DATA_RN]);
+			regs.ALU = regs.R[DATA_RD] & ~regs.R[DATA_RN];
+			regs.R[DATA_RD] = regs.ALU;
+			nzflagchk(regs.R[DATA_RD], regs.R[DATA_RN]);
 			break;
 		case DATA_CMP:
-			regs->ALU = regs->R[DATA_RD] & ~regs->R[DATA_RN] + 1;
-			nzflagchk(regs, regs->R[DATA_RD], regs->R[DATA_RN]);
+			regs.ALU = regs.R[DATA_RD] & ~regs.R[DATA_RN] + 1;
+			nzflagchk(regs.R[DATA_RD], regs.R[DATA_RN]);
 			break;
 		case DATA_EOR:
-			regs->ALU = regs->R[DATA_RD] ^ regs->R[DATA_RN];
-			regs->R[DATA_RD] = regs->ALU;
-			nzflagchk(regs, regs->R[DATA_RD], regs->R[DATA_RN]);
+			regs.ALU = regs.R[DATA_RD] ^ regs.R[DATA_RN];
+			regs.R[DATA_RD] = regs.ALU;
+			nzflagchk(regs.R[DATA_RD], regs.R[DATA_RN]);
 			break;
 		case DATA_LSL:
-			regs->ALU = regs->R[DATA_RD] << regs->R[DATA_RN];
-			regs->R[DATA_RD] = regs->ALU;
-			allflagchk(regs, regs->R[DATA_RD], regs->R[DATA_RN]);
+			regs.ALU = regs.R[DATA_RD] << regs.R[DATA_RN];
+			regs.R[DATA_RD] = regs.ALU;
+			allflagchk(regs.R[DATA_RD], regs.R[DATA_RN]);
 			break;
 		case DATA_LSR:
-			regs->ALU = regs->R[DATA_RD] >> regs->R[DATA_RN];
-			regs->R[DATA_RD] = regs->ALU;
-			allflagchk(regs, regs->R[DATA_RD], regs->R[DATA_RN]);
+			regs.ALU = regs.R[DATA_RD] >> regs.R[DATA_RN];
+			regs.R[DATA_RD] = regs.ALU;
+			allflagchk(regs.R[DATA_RD], regs.R[DATA_RN]);
 			break;
 		case DATA_MOV:
-			regs->R[DATA_RD] = regs->R[DATA_RN];
-			nzflagchk(regs, regs->R[DATA_RD], regs->R[DATA_RN]);
+			regs.R[DATA_RD] = regs.R[DATA_RN];
+			nzflagchk(regs.R[DATA_RD], regs.R[DATA_RN]);
 			break;
 		case DATA_MVN:
-			regs->R[DATA_RD] = ~regs->R[DATA_RN];
-			nzflagchk(regs, regs->R[DATA_RD], regs->R[DATA_RN]);
+			regs.R[DATA_RD] = ~regs.R[DATA_RN];
+			nzflagchk(regs.R[DATA_RD], regs.R[DATA_RN]);
 			break;
 		case DATA_ORR:
-			regs->ALU = regs->R[DATA_RD] | regs->R[DATA_RN];
-			regs->R[DATA_RD] = regs->ALU;
-			nzflagchk(regs, regs->R[DATA_RD], regs->R[DATA_RN]);
+			regs.ALU = regs.R[DATA_RD] | regs.R[DATA_RN];
+			regs.R[DATA_RD] = regs.ALU;
+			nzflagchk(regs.R[DATA_RD], regs.R[DATA_RN]);
 			break;
 		case DATA_ROR:
-			for(i = 0; i < regs->R[DATA_RN]; i++)
+			for(i = 0; i < regs.R[DATA_RN]; i++)
 			{
-				regs->CARRY = regs->R[DATA_RD] & 0x0001;
-				if(regs->CARRY)
-					regs->ALU = (regs->R[DATA_RD] >> 1) | 0x80000000;
+				regs.CARRY = regs.R[DATA_RD] & 0x0001;
+				if(regs.CARRY)
+					regs.ALU = (regs.R[DATA_RD] >> 1) | 0x80000000;
 			}
-			regs->R[DATA_RD] = regs->ALU;
-			nzflagchk(regs, regs->R[DATA_RD], regs->R[DATA_RN]);
+			regs.R[DATA_RD] = regs.ALU;
+			nzflagchk(regs.R[DATA_RD], regs.R[DATA_RN]);
 			break;
 		case DATA_SUB:
-			regs->ALU = regs->R[DATA_RD] + ~regs->R[DATA_RN] + 1;
-			regs->R[DATA_RD] = regs->ALU;
-			nzflagchk(regs, regs->R[DATA_RD], regs->R[DATA_RN]);
+			regs.ALU = regs.R[DATA_RD] + ~regs.R[DATA_RN] + 1;
+			regs.R[DATA_RD] = regs.ALU;
+			nzflagchk(regs.R[DATA_RD], regs.R[DATA_RN]);
 			break;
 		case DATA_SXB:
-			regs->R[DATA_RD] = (signed)regs->R[DATA_RN];
-			nzflagchk(regs, regs->R[DATA_RD], regs->R[DATA_RN]);
+			regs.R[DATA_RD] = (signed)regs.R[DATA_RN];
+			nzflagchk(regs.R[DATA_RD], regs.R[DATA_RN]);
 			break;
 		case DATA_TEQ:
-			regs->ALU = regs->R[DATA_RD] ^ regs->R[DATA_RN] + 1;
-			nzflagchk(regs, regs->R[DATA_RD], regs->R[DATA_RN]);
+			regs.ALU = regs.R[DATA_RD] ^ regs.R[DATA_RN] + 1;
+			nzflagchk(regs.R[DATA_RD], regs.R[DATA_RN]);
 			break;
 		case DATA_TST:
-			regs->ALU = regs->R[DATA_RD] & regs->R[DATA_RN];
-			nzflagchk(regs, regs->R[DATA_RD], regs->R[DATA_RN]);
+			regs.ALU = regs.R[DATA_RD] & regs.R[DATA_RN];
+			nzflagchk(regs.R[DATA_RD], regs.R[DATA_RN]);
 			break;
 		default:
 			perror("Operation not found");	
 	}
 }
 
-void execute_load(unsigned ir, unsigned type, registers *regs, uint8_t *memptr)
+void execute_load(unsigned ir, unsigned type)
 {
 	int i = 0;
 	uint32_t mask = 0xFF000000;
@@ -160,149 +160,313 @@ void execute_load(unsigned ir, unsigned type, registers *regs, uint8_t *memptr)
 	{
 		// Store
 		case 0:
-			// Word
+			// Dword
 			if(LOAD_W == 0)	
 			{
-				regs->MAR = regs->R[LOAD_RN];
-				regs->MBR = regs->R[LOAD_RD];
+				regs.MAR = regs.R[LOAD_RN];
+				regs.MBR = regs.R[LOAD_RD];
 				for(i = 0; i < 4; i++)
 				{
 					/* Move MSB first into memory, then the rest */
-					memptr[regs->MAR++] = (regs->MBR & mask) >> (8 * (3 - i));
+					((uint8_t *)memptr)[regs.MAR++] = (regs.MBR & mask) >> (8 * (3 - i));
 					mask = mask >> 8;
 				}
 			}
 			// Byte
 			else if(LOAD_W == 1)
 			{
-				regs->MAR = regs->R[LOAD_RN];
-				regs->MBR = regs->R[LOAD_RD];
-				memptr[regs->MAR] = regs->MBR;
+				regs.MAR = regs.R[LOAD_RN];
+				regs.MBR = regs.R[LOAD_RD];
+				((uint8_t *) memptr)[regs.MAR] = regs.MBR;
 			}
 			break;
 		// Load
 		case 1:
-			// Load word
+			// Load Dword
 			if(LOAD_W == 0)
 			{
-				regs->MAR = regs->R[LOAD_RN];
+				regs.MAR = regs.R[LOAD_RN];
 				for(i = 0; i < 4; i++)
 				{
-					regs->MBR = regs->MBR << 8;
-					regs->MBR += memptr[regs->MAR++];
+					regs.MBR = regs.MBR << 8;
+					regs.MBR += ((uint8_t *) memptr)[regs.MAR++];
 				}
-				regs->R[LOAD_RD] = regs->MBR;
+				regs.R[LOAD_RD] = regs.MBR;
 			}
 			// Load byte
 			else if(LOAD_W == 1)
 			{
-				regs->MAR = regs->R[LOAD_RN] & 0x000000FF;
-				regs->MBR = memptr[regs->MAR];
-				regs->R[LOAD_RD] = regs->MBR;
+				regs.MAR = regs.R[LOAD_RN] & 0x000000FF;
+				regs.MBR = ((uint8_t *) memptr)[regs.MAR];
+				regs.R[LOAD_RD] = regs.MBR;
 			}
 			break;
 	}	
 }
 
-void execute_immediate(unsigned ir, unsigned type, registers *regs)
+void execute_immediate(unsigned ir, unsigned type)
 {
 	switch(IMM_OP)
 	{
 		case MOV_IMM:
-			regs->ALU = IMM_VALUE;
-			regs->R[IMM_RD] = regs->ALU;
-			nzflagchk(regs, regs->R[IMM_RD], IMM_VALUE);
+			regs.ALU = IMM_VALUE;
+			regs.R[IMM_RD] = regs.ALU;
+			nzflagchk(regs.R[IMM_RD], IMM_VALUE);
 			break;
 		case CMP_IMM:
-			regs->ALU = regs->R[IMM_RD] - IMM_VALUE;
-			allflagchk(regs, regs->ALU, IMM_VALUE);
+			regs.ALU = regs.R[IMM_RD] - IMM_VALUE;
+			allflagchk(regs.ALU, IMM_VALUE);
 			break;
 		case ADD_IMM:
-			regs->ALU = regs->R[IMM_RD] + IMM_VALUE;
-			regs->R[IMM_RD] = regs->ALU;
-			allflagchk(regs, regs->R[IMM_RD], IMM_VALUE);
+			regs.ALU = regs.R[IMM_RD] + IMM_VALUE;
+			regs.R[IMM_RD] = regs.ALU;
+			allflagchk(regs.R[IMM_RD], IMM_VALUE);
 			break;
 		case SUB_IMM:
-			regs->ALU = regs->R[IMM_RD] + ~IMM_VALUE + 1;
-			regs->R[IMM_RD] = regs->ALU;
-			allflagchk(regs, regs->R[IMM_RD], IMM_VALUE);
+			regs.ALU = regs.R[IMM_RD] + ~IMM_VALUE + 1;
+			regs.R[IMM_RD] = regs.ALU;
+			allflagchk(regs.R[IMM_RD], IMM_VALUE);
 			break;
 	}
 }
 
-void execute_cbranch(unsigned ir, unsigned type, registers *regs)
+void execute_cbranch(unsigned ir, unsigned type)
 {
 	/* Use hold value to sign CBRANCH_ADDR */
 	int8_t temp = CBRANCH_ADDR;
 	int32_t offset = (int32_t) temp;
 	/* Decrement PC to reset the branch fetch */
-	regs->PC -= 2;
+	regs.PC -= 2;
 
 	switch(CBRANCH_COND)
 	{
 		case CBRANCH_EQ:
-			if(regs->ZERO == true)
-				regs->PC += offset;
+			if(regs.ZERO == true)
+				regs.PC += offset;
 			break;
 		case CBRANCH_NE:
-			if(regs->ZERO == false)
-				regs->PC += offset;	
+			if(regs.ZERO == false)
+				regs.PC += offset;	
 			break;
 		case CBRANCH_CS:
-			if(regs->CARRY = true)
-				regs->PC += offset;
+			if(regs.CARRY = true)
+				regs.PC += offset;
 			break;
 		case CBRANCH_CC:
-			if(regs->CARRY = false)
-				regs->PC += offset;
+			if(regs.CARRY = false)
+				regs.PC += offset;
 			break;
 		case CBRANCH_MI:
-			if(regs->SIGN == true)
-				regs->PC += offset;
+			if(regs.SIGN == true)
+				regs.PC += offset;
 			break;
 		case CBRANCH_PL:
-			if(regs->SIGN == false)
-				regs->PC += offset;
+			if(regs.SIGN == false)
+				regs.PC += offset;
 			break;
 		case CBRANCH_HI:
-			if(regs->CARRY == true && regs->ZERO == false)
-				regs->PC += offset;
+			if(regs.CARRY == true && regs.ZERO == false)
+				regs.PC += offset;
 			break;
 		case CBRANCH_LS:
-			if(regs->CARRY == false && regs->ZERO == true)
-				regs->PC += offset;
+			if(regs.CARRY == false && regs.ZERO == true)
+				regs.PC += offset;
 			break;
 		case CBRANCH_AL:
-			regs->PC += offset;
+			regs.PC += offset;
 			break;
 	}
-	regs->IR = 0;
+	regs.IR = 0;
 	IR_ACTIVE = 0;
 }
 
-void execute_push(uint16_t ir, uint16_t type, registers *regs, uint8_t *memptr)
+void execute_push(uint16_t ir, uint16_t type)
 {
-	uint8_t i;
+	uint8_t i, j, activereg;
+	uint16_t instruction;
+	uint32_t mask = 0xFF000000;
 
-	regs->SP--;
-	printf("sp: %08X\n", regs->SP);
-	regs->MAR = regs->SP;
-	for(i = 3; i >= 0; i--)
+	/* SP starts at the end of memory */
+	if(regs.SP == 0)
+		regs.SP = 0x4000;
+
+	printf("PUSH_LOAD_B: %X\nPUSH_EXTRA_B: %X\nPUSH_HIGH_B: %X\n", PUSH_LOAD_B, PUSH_EXTRA_B, PUSH_HIGH_B);
+
+	switch(PUSH_LOAD_B)
 	{
-		memptr[regs->MAR + i] = regs->R[PUSH_REG_LIST];
-		regs->MBR = regs->MBR >> 8;
+		/* PUSH */
+		case 0x0:
+			switch(PUSH_EXTRA_B)
+			{
+				/* No extra PUSH/PULL */
+				case 0x0:
+					switch(PUSH_HIGH_B)
+					{
+						/* Low Registers */
+						case 0x0:
+							activereg = 7;
+							for(i = 0x80; i > 0;)
+							{
+								if((PUSH_REG_LIST & i) != 0)
+								{
+									regs.SP -= 0x0004;
+									instruction = 0x20D0 + activereg;
+									execute_load(instruction, type);
+								}
+								activereg--;
+								i = i >> 1;
+							}
+							break;
+						/* High Registers */
+						case 0x1:
+							activereg = 0xC;
+							for(i = 0x80; i > 0;)
+							{
+								if((PUSH_REG_LIST & i) != 0)
+								{
+									regs.SP -= 0x0004;
+									instruction = 0x20D0 + activereg;
+									execute_load(instruction, type);
+								}
+								activereg--;
+								i = i >> 1;
+							}
+							break;
+					}
+					break;
+				/* Extra PUSH/PULL */
+				case 0x1:
+					switch(PUSH_HIGH_B)
+					{
+						/* Low Registers */
+						case 0x0:
+							activereg = 7;
+							for(i = 0x80; i > 0;)
+							{
+								if((PUSH_REG_LIST & i) != 0)
+								{
+									regs.SP -= 0x0004;
+									instruction = 0x20D0 + activereg;
+									execute_load(instruction, type);
+								}
+								activereg--;
+								i = i >> 1;
+							}
+							break;
+						/* High Registers */
+						case 0x1:
+							activereg = 0xC;
+							for(i = 0x80; i > 0;)
+							{
+								if((PUSH_REG_LIST & i) != 0)
+								{
+									regs.SP -= 0x0004;
+									instruction = 0x20D0 + activereg;
+									execute_load(instruction, type);
+								}
+								activereg--;
+								i = i >> 1;
+							}
+							break;
+					}
+					break;
+					/* Push LR */
+					execute_load(0x20DE, type);
+			}
+			break;
+		/* PULL */
+		case 0x1:
+			switch(PUSH_EXTRA_B)
+			{
+				/* No extra PUSH/PULL */
+				case 0x0:
+					switch(PUSH_HIGH_B)
+					{
+						/* Low Registers */
+						case 0x0:
+							activereg = 7;
+							for(i = 0x80; i > 0;)
+							{
+								if((PUSH_REG_LIST & i) != 0)
+								{
+									instruction = 0x28D0 + activereg;
+									execute_load(instruction, type);
+									regs.SP += 0x0004;
+								}
+								activereg--;
+								i = i >> 1;
+							}
+							break;
+						/* High Registers */
+						case 0x1:
+							activereg = 0xC;
+							for(i = 0x80; i > 0;)
+							{
+								if((PUSH_REG_LIST & i) != 0)
+								{
+									instruction = 0x28D0 + activereg;
+									execute_load(instruction, type);
+									regs.SP += 0x0004;
+								}
+								activereg--;
+								i = i >> 1;
+							}
+							break;
+					}
+					break;
+				/* Extra PUSH/PULL */
+				case 0x1:
+					switch(PUSH_HIGH_B)
+					{
+						/* Low Registers */
+						case 0x0:
+							activereg = 7;
+							for(i = 0x80; i > 0;)
+							{
+								if((PUSH_REG_LIST & i) != 0)
+								{
+									regs.SP -= 0x0004;
+									instruction = 0x20D0 + activereg;
+									execute_load(instruction, type);
+								}
+								activereg--;
+								i = i >> 1;
+							}
+							break;
+						/* High Registers */
+						case 0x1:
+							activereg = 0xC;
+							for(i = 0x80; i > 0;)
+							{
+								if((PUSH_REG_LIST & i) != 0)
+								{
+									regs.SP -= 0x0004;
+									instruction = 0x20D0 + activereg;
+									execute_load(instruction, type);
+								}
+								activereg--;
+								i = i >> 1;
+							}
+							break;
+					}
+					break;
+					/* Pull PC */
+					execute_load(0x28DF, type);
+			}
+			break;
+			break;
 	}
 }
 
-void execute_ubranch(unsigned ir, unsigned type, registers *regs)
+void execute_ubranch(unsigned ir, unsigned type)
 {
 	if(UBRANCH_LINK == 0)
 	{
-		regs->PC = UBRANCH_OFFSET;
+		regs.PC = UBRANCH_OFFSET;
 	}
 	else
 	{
-		regs->LR = regs->PC;
-		regs->PC = UBRANCH_OFFSET;
+		regs.LR = regs.PC;
+		regs.PC = UBRANCH_OFFSET;
 	}
 }

@@ -3,7 +3,7 @@
 #include <ctype.h>
 #include "hardware.h"
 
-void memmod(void *memptr, unsigned offset)
+void memmod(unsigned offset)
 {
 	char new_input[sizeof(uint16_t) + 1];
 	unsigned int value;

@@ -6,7 +6,7 @@
 #define HEXDUMP_COLS 16
 
 /* Displays the contents of memory */
-void memdump(void *memptr, unsigned offset, unsigned length) 
+void memdump(unsigned offset, unsigned length) 
 {
 	uint32_t i, j, k, end;
 

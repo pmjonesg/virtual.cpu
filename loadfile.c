@@ -5,7 +5,7 @@
 
 /* The purpose of this function is to load a stored file into memory,
    and display the number of bytes read in decimal and hex. */
-int loadfile(void *memory, uint32_t max) {
+int loadfile(uint32_t max) {
 	char file_name[FILEN_MAX], *pos;
 	int bytes_read;
 	FILE *file;
@@ -25,12 +25,12 @@ int loadfile(void *memory, uint32_t max) {
 		/* Read file with max as the limit (normally it would be MEMORY_MAX) */
 		if(bytes_read == max)
 		{
-			fread(memory, 1, max, file);
+			fread(memptr, 1, max, file);
 			printf("%d (Decimal) %02x (Hex) bytes read from file %s, and has been truncated\n", bytes_read, bytes_read, file_name);
 		}
 		else
 		{
-			fread(memory, 1, bytes_read, file);
+			fread(memptr, 1, bytes_read, file);
 			printf("%d (Decimal) %x (Hex) bytes read from file %s\n", bytes_read, bytes_read, file_name);
 		}
 		fclose(file);

@@ -25,8 +25,6 @@
 #include <ctype.h>
 #include "hardware.h"
 
-registers regs;
-uint8_t memptr[MEMORY_MAX];
 
 int main(int argc, char **argv) {
 
@@ -36,7 +34,7 @@ int main(int argc, char **argv) {
 	unsigned int i;
 	bool valid = false;
 
-	zero(&regs);
+	zero();
 
 	while (true) {
 		printf("Enter an option (h to display help): ");
@@ -54,14 +52,14 @@ int main(int argc, char **argv) {
 				printf("(length?) ");
 				if(intoi(length_input, HEX_MAX + 1, 1, &length) == -1)
 					break;
-				memdump(memptr, offset, (length - 1));
+				memdump(offset, (length - 1));
 				break;
 			case 'g':
 				while(!STOP)
-					ic(&regs, memptr);
+					ic();
 				break;
 			case 'l':
-				loadfile(&memptr, MEMORY_MAX);
+				loadfile(MEMORY_MAX);
 				break;
 			case 'm':
 				printf("(offset?) ");
@@ -72,22 +70,23 @@ int main(int argc, char **argv) {
 					printf("Offset must be a positive integer between 0x0000 and 0x4000\n");
 					break;
 				}
-				memmod(memptr, offset);
+				memmod(offset);
 				break;
 			case 'q':
 				return 0;
 			case 'r':
-				regdump(&regs);
+				regdump();
 				break;
 			case 't':
-				trace;
+				ic(); 
+				regdump();
 				break;
 			case 'w':
-				writefile(&memptr);
+				writefile();
 				break;
 			case 'z':
 				printf("Reinitializing registers... ");
-				zero(&regs);
+				zero();
 				printf("Done\n");
 				break;
 			case '?':

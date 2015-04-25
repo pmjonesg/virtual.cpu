@@ -17,30 +17,30 @@ return((op1 > (MAX32 - op2 - C))?1:0);
 }
 
 
-void allflagchk(registers *regs, uint32_t regs1, uint32_t regs2)
+void allflagchk(uint32_t regs1, uint32_t regs2)
 {
 	if(ISZERO(regs1))
-		regs->ZERO = 1;
+		regs.ZERO = 1;
 	else if(!ISZERO(regs1))
-		regs->ZERO = 0;
+		regs.ZERO = 0;
 	if(ISSIGN(regs1))
-		regs->SIGN = 1;
+		regs.SIGN = 1;
 	else if(!ISSIGN(regs1))
-		regs->SIGN = 0;
-	if(iscarry(regs1, regs2, regs->CARRY))
-		regs->CARRY = 1;
-	else if(!iscarry(regs1, regs2, regs->CARRY))
-		regs->CARRY = 0;
+		regs.SIGN = 0;
+	if(iscarry(regs1, regs2, regs.CARRY))
+		regs.CARRY = 1;
+	else if(!iscarry(regs1, regs2, regs.CARRY))
+		regs.CARRY = 0;
 }
 
-void nzflagchk(registers *regs, uint32_t regs1, uint32_t regs2)
+void nzflagchk(uint32_t regs1, uint32_t regs2)
 {
 	if(ISSIGN(regs1))
-		regs->SIGN = 1;
+		regs.SIGN = 1;
 	else if(!ISSIGN(regs1))
-		regs->SIGN = 0;
+		regs.SIGN = 0;
 	if(ISZERO(regs1))
-		regs->ZERO = 1;
+		regs.ZERO = 1;
 	if(!ISZERO(regs1))
-		regs->ZERO = 0;
+		regs.ZERO = 0;
 }
